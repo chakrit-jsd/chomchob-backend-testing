@@ -1,0 +1,32 @@
+version: '3.9'
+
+services:
+  api-server:
+    image: api-server
+    container_name: api-server
+    environment:
+      - BACKEND_PORT=3000
+      - MONGO_DB_URI=mongodb://root:1234@mongo-chomchob-testing:27017/chomchob-testing?authSource=admin
+    depends_on:
+      - mongoDB
+    networks:
+      - app-network
+    ports:
+      - 3001:3000
+
+  mongoDB:
+    image: mongo
+    container_name: mongo-chomchob-testing
+    restart: always
+    volumes:
+      - ./data/mongoDB:/data/db
+    environment:
+      - MONGO_INITDB_ROOT_USERNAME=root
+      - MONGO_INITDB_ROOT_PASSWORD=1234
+    networks:
+      - app-network
+    ports:
+      - 27017:27017
+
+networks:
+  app-network:

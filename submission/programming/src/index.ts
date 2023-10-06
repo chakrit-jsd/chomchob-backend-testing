@@ -1,5 +1,6 @@
 import express from 'express';
 import dotenv from 'dotenv';
+import connectMongoose from './databases/connect.mongoose';
 
 dotenv.config();
 
@@ -8,10 +9,18 @@ const app = express();
 
 
 app.get('/ping', (req, res) => res.send('pong'))
+// app.get('/testmodel', async (req, res) => {
 
-const host = process.env.HOST || 'localhost';
-const port = Number(process.env.PORT || 3000);
+//   // res.send(m);
+// })
 
-app.listen(port, host, () => {
-  console.log(`App listening http://www.${host}:${port}/`)
+// app.get('/testall', async (req, res) => {
+// })
+
+const port = Number(process.env.BACKEND_PORT || 3000);
+
+connectMongoose()
+
+app.listen(port, () => {
+  console.log(`App listening port: ${port}`)
 });

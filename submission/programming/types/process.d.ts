@@ -1,6 +1,8 @@
 declare namespace NodeJS {
   interface ProcessEnv {
-    PORT?: string;
-    HOST?: string;
+    BACKEND_PORT?: string;
+    BACKEND_HOST?: string;
+
+    MONGO_DB_URL: string;
   }
 }
