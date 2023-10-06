@@ -6,27 +6,48 @@ services:
     container_name: api-server
     environment:
       - BACKEND_PORT=3000
-      - MONGO_DB_URI=mongodb://root:1234@mongo-chomchob-testing:27017/chomchob-testing?authSource=admin
+      - DB_NAME=chomchob-testing
+      - DB_USER=root
+      - DB_PASS=1234
+      - DB_PORT=3306
+
     depends_on:
-      - mongoDB
+      - mariaDB
     networks:
       - app-network
     ports:
       - 3001:3000
 
-  mongoDB:
-    image: mongo
-    container_name: mongo-chomchob-testing
+  # mongoDB:
+  #   image: mongo
+  #   container_name: mongo-chomchob-testing
+  #   restart: always
+  #   volumes:
+  #     - ./data/mongoDB:/data/db
+  #   environment:
+  #     - MONGO_INITDB_ROOT_USERNAME=root
+  #     - MONGO_INITDB_ROOT_PASSWORD=1234
+  #   networks:
+  #     - app-network
+  #   ports:
+  #     - 27017:27017
+
+  mariaDB:
+    image: mariadb
+    container_name: maria-chomchob-testing
     restart: always
-    volumes:
-      - ./data/mongoDB:/data/db
+    command: --max_allowed_packet=32505856
     environment:
-      - MONGO_INITDB_ROOT_USERNAME=root
-      - MONGO_INITDB_ROOT_PASSWORD=1234
+      - MARIADB_DATABASE=chomchob-testing
+      - MARIADB_ROOT_PASSWORD=1234
+      - MARIADB_USER=root
+      - MARIADB_PASSWORD=1234
+    volumes:
+      - ./data/mariaDB:/var/lib/mysql
     networks:
       - app-network
     ports:
-      - 27017:27017
+      - 3307:3306
 
 networks:
   app-network:
