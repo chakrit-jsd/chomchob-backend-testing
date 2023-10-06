@@ -1,4 +1,4 @@
-import { Model, ObjectId, Schema, model } from "mongoose";
+import {Table, Column, Model, DataType, DeletedAt} from 'sequelize-typescript';
 import { DefaultModel } from "./_constrain";
 
 export interface ICurrency extends DefaultModel {
@@ -7,28 +7,26 @@ export interface ICurrency extends DefaultModel {
   dollarPrice: number;
 }
 
+@Table({ timestamps: true })
+export class Currency extends Model<ICurrency> {
 
-const currencySchema = new Schema<ICurrency, Model<ICurrency>>({
-  name: {
-    type: String,
-    required: true,
+  @Column({
+    type: DataType.STRING(20),
     unique: true,
-    min: 3,
-    max: 20,
-  },
-  symbol: {
-    type: String,
-    required: true,
-    unique: true,
-    min: 3,
-    max: 5,
-  },
-  dollarPrice: {
-    type: Number,
-    required: true,
-    min: 0.0001,
-  }
-}, {timestamps: true})
+  })
+  name!: string;
 
-const CurrencyModel = model('Currency', currencySchema)
-export default CurrencyModel;
+  @Column({
+    type: DataType.STRING(5),
+    unique: true,
+  })
+  symbol!: string;
+
+  @Column({
+    type: DataType.INTEGER({ length: 11, decimals: 4, unsigned: true })
+  })
+  dollarPrice!: number;
+
+  @DeletedAt
+  deletedAt?: any;
+}

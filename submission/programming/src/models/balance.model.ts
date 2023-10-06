@@ -1,30 +1,36 @@
-import { Model, ObjectId, Schema, model } from "mongoose";
-import { DefaultModel, ModelNames } from "./_constrain";
+import {Table, Column, Model, DataType, DeletedAt, PrimaryKey, ForeignKey, BelongsTo} from 'sequelize-typescript';
+import { Optional } from 'sequelize';
+import { DefaultModel } from "./_constrain";
+import { Account } from './Account.model';
+import { Currency } from './Currency.model';
 
-export interface IBalance extends DefaultModel {
-  owner: ObjectId;
-  currency: ObjectId;
+
+export interface IBalance extends Omit<DefaultModel, 'id'> {
+  address: string;
+  ownerId: number;
+  currencyId: number;
   amount: number;
 }
 
-const balanceSchema = new Schema<IBalance, Model<IBalance>>({
-  owner: {
-    ref: ModelNames.AccountModel,
-    type: Schema.Types.ObjectId,
-    required: true,
-  },
-  currency: {
-    ref: ModelNames.CurrencyModel,
-    type: Schema.Types.ObjectId,
-    required: true,
-  },
-  amount: {
-    type: Number,
-    min: 0,
-    default: 0,
-  }
-}, {timestamps: true})
+interface IBalanceOption extends Optional<IBalance, 'address'> {}
 
+@Table({ timestamps: true })
+export class Balance extends Model<IBalance, IBalanceOption> {
+  @PrimaryKey
+  @Column({
+    type: DataType.UUID,
+    defaultValue: DataType.UUIDV4
+  })
+  address!: string;
 
-const BalanceModel = model('Balance', balanceSchema)
-export default BalanceModel;
+  @BelongsTo(() => Account, 'ownerId')
+  owner!: Account;
+
+  @BelongsTo(() => Currency, 'currencyId')
+  currency!: Currency;
+
+  // @Column({
+  //   type: DataType.INTEGER({ length: 11, decimals: 4, unsigned: true })
+  // })
+  // amount!: number;
+}

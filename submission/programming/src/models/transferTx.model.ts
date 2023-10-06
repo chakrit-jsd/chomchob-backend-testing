@@ -1,54 +1,49 @@
-import { Model, ObjectId, Schema, model } from "mongoose";
-import { DefaultModel, ModelNames } from "./_constrain";
+import {Table, Column, Model, DataType, DeletedAt, ForeignKey, BelongsTo, AllowNull} from 'sequelize-typescript';
+import { Optional } from 'sequelize';
+import { DefaultModel } from "./_constrain";
+import { Currency } from './Currency.model';
+import { Exchange } from './Exchange.model';
+import { Balance } from './Balance.model';
+import { ExchangeTx } from './ExchangeTx.model';
 
 
 export enum StatusTransferTx {
-  PENDING, SUCCESSED, FAILED
+  PENDING = 'pending',
+  SUCCESSED = 'successed',
+  FAILED = 'failed'
 }
+
 export interface ITransferTx extends DefaultModel {
-  fromAddress: ObjectId
-  targetAddress: ObjectId
-  detail?: ObjectId
+  fromAddress: string
+  targetAddress: string
+  exTx?: number
   initialAmount: number
   receivedAmount: number
   status: StatusTransferTx
 }
 
+@Table({ timestamps: true })
+export class TransferTx extends Model<ITransferTx> {
 
-const transferTx = new Schema<ITransferTx, Model<ITransferTx>>({
-  fromAddress: {
-    ref: ModelNames.BalanceModel,
-    type: Schema.Types.ObjectId,
-    required: true,
-  },
-  targetAddress: {
-    ref: ModelNames.BalanceModel,
-    type: Schema.Types.ObjectId,
-    required: true,
-  },
-  initialAmount: {
-    type: Number,
-    min: 0,
-    required: true,
-  },
-  receivedAmount: {
-    type: Number,
-    min: 0,
-    required: true,
-  },
-  detail: {
-    ref: ModelNames.ExchangeModel,
-    type: Schema.Types.ObjectId,
-    default: null,
-  },
-  status: {
-    type: Number,
-    enum: StatusTransferTx,
-    default: StatusTransferTx.PENDING,
-  }
+  @Column(DataType.INTEGER({ length: 11, decimals: 4, unsigned: true }))
+  initialAmount!: number
 
-}, {timestamps: true})
+  @Column(DataType.INTEGER({ length: 11, decimals: 4, unsigned: true }))
+  receivedAmount!: number
 
 
-const TransferTxModel = model('TransferTx', transferTx)
-export default TransferTxModel;
+  @BelongsTo(() => Balance, 'formAdress')
+  form!: Balance;
+
+  @BelongsTo(() => Balance, 'targetAdress')
+  target!: Balance;
+
+  @BelongsTo(() => ExchangeTx, 'exTx')
+  exchangeTx?: ExchangeTx;
+
+  @Column({
+    type: DataType.ENUM(StatusTransferTx.PENDING, StatusTransferTx.SUCCESSED, StatusTransferTx.FAILED),
+    defaultValue: StatusTransferTx.PENDING,
+  })
+  status!: string;
+}

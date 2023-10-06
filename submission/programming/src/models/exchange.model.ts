@@ -1,47 +1,41 @@
-import { Document, Model, ObjectId, Schema, model } from "mongoose";
-import { DefaultModel, ModelNames } from "./_constrain";
+import {Table, Column, Model, DataType, DeletedAt, ForeignKey, BelongsTo} from 'sequelize-typescript';
+import { Optional } from 'sequelize';
+import { DefaultModel } from "./_constrain";
+import { Currency } from './Currency.model';
 
 export enum AdjustType {
-  NULL, PERCENTAGE, PLAIN,
+  NULL = 'null',
+  PERCENTAGE = 'percentage',
+  PLAIN = 'plain',
 }
 
-export interface IExchangeRate extends DefaultModel {
-  initialCurrency: ObjectId;
-  targetCurrency: ObjectId;
+export interface IExchange extends DefaultModel {
+  initialCurrencyId: number;
+  targetCurrencyId: number;
   adjust: number;
   adjustType: AdjustType;
 }
 
-// interface IExchangeRateDocument extends IExchangeRate, Document {
-//   getExRate(): number;
-// }
+interface IExchangeOption extends Optional<IExchange, 'adjust' | 'adjustType'> {}
 
-const exchangeRateSchema = new Schema<IExchangeRate, Model<IExchangeRate>>({
-  initialCurrency: {
-    ref: ModelNames.CurrencyModel,
-    type: Schema.Types.ObjectId,
-    required: true,
-  },
-  targetCurrency: {
-    ref: ModelNames.CurrencyModel,
-    type: Schema.Types.ObjectId,
-    required: true,
-  },
-  adjust: {
-    type: Number,
-    min: -100,
-    max: 100,
-    default: 0,
-  },
-  adjustType: {
-    type: Number,
-    enum: AdjustType,
-    default: AdjustType.NULL
-  }
-}, {timestamps: true})
+@Table({ timestamps: true })
+export class Exchange extends Model<IExchange, IExchangeOption> {
 
-// exchangeRateSchema.methods.getExRate = function ()
+  @Column(DataType.FLOAT(3,2))
+  adjust!: number;
 
+  @Column({
+    type: DataType.ENUM(AdjustType.NULL, AdjustType.PERCENTAGE, AdjustType.PLAIN),
+    defaultValue: AdjustType.NULL,
+  })
+  adjustType!: string;
 
-const ExchangeModel = model('Exchange', exchangeRateSchema)
-export default ExchangeModel;
+  @DeletedAt
+  deletedAt?: any;
+
+  @BelongsTo(() => Currency, 'initialCurrencyId')
+  initialCurrency!: Currency;
+
+  @BelongsTo(() => Currency, 'targetCurrencyId')
+  targetCurrency!: Currency;
+}
