@@ -7,16 +7,16 @@ services:
     environment:
       - BACKEND_PORT=3000
       - DB_NAME=chomchob-testing
+      - DB_HOST=maria-chomchob-testing
       - DB_USER=root
       - DB_PASS=1234
       - DB_PORT=3306
-
-    depends_on:
-      - mariaDB
     networks:
       - app-network
     ports:
       - 3001:3000
+    depends_on:
+      - mariaDB
 
   # mongoDB:
   #   image: mongo
@@ -33,7 +33,7 @@ services:
   #     - 27017:27017
 
   mariaDB:
-    image: mariadb
+    image: mariadb:latest
     container_name: maria-chomchob-testing
     restart: always
     command: --max_allowed_packet=32505856

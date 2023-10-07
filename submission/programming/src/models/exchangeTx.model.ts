@@ -26,10 +26,10 @@ export interface IExchangeTx extends DefaultModel {
 export class ExchangeTx extends Model<IExchangeTx> {
 
 
-  @Column(DataType.INTEGER({ length: 11, decimals: 4, unsigned: true }))
+  @Column(DataType.DECIMAL({ unsigned: true, precision: 10, scale: 4 }))
   initialAmount!: number
 
-  @Column(DataType.INTEGER({ length: 11, decimals: 4, unsigned: true }))
+  @Column(DataType.DECIMAL({ unsigned: true, precision: 10, scale: 4 }))
   receivedAmount!: number
 
   @Column({

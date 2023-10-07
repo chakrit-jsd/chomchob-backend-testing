@@ -6,6 +6,10 @@ import { Role } from './models/_constrain';
 import { Currency } from './models/Currency.model';
 import { Exchange } from './models/Exchange.model';
 import { Balance } from './models/Balance.model';
+import { ExchangeTx } from './models/ExchangeTx.model';
+import { TransferTx } from './models/TransferTx.model';
+import { seeder } from './utils/seedDB';
+import { addCurrency, deleteCurrency, getAllCurrency, getOneCurrency } from './services/currency.service';
 
 dotenv.config();
 
@@ -28,8 +32,22 @@ console.log(process.env.DB_NAME);
     // sequelize.sync()
     await sequelize.authenticate()
     // await sequelize.drop()
+    await Account.sync()
+    await Currency.sync()
+    await Exchange.sync()
+    await Balance.sync()
+    await ExchangeTx.sync()
+    await TransferTx.sync()
+    // addCurrency({ })
+    // updateCurrency({ })
     // await sequelize.sync()
-
+    // seeder()
+    // const res = deleteCurrency(8)
+    // console.log( await res)
+    const res = await getAllCurrency(true)
+    // console.log(typeof 1)
+    const res1 = await getOneCurrency({ symbol: 'btc' })
+    console.log(res1)
     // Currency.create({
     //   name: 'ethereum',
     //   symbol: 'ETH',
@@ -49,23 +67,23 @@ console.log(process.env.DB_NAME);
     //   lastName: 'testtest',
     // })
 
-    const acc = await Account.findByPk(1)
-    console.log(await acc?.$count('totalBalance'))
-    // const res2 = await acc?.$create('totalBalance', { ownerId: acc.id, currencyId: 1 });
-    // // console.log(res2)
-    const res3 = await acc?.reload({
-      include: {
-        model: Balance,
-        as: 'totalBalance',
-        include: [
-          {
-            model: Currency,
-            as: 'currency',
-          }
-        ]
-      }})
-    // const arr = res3?.totalBalance.map((v) => v.dataValues)
-    console.log(JSON.stringify(res3, null, 2))
+    // const acc = await Account.findByPk(1)
+    // console.log(await acc?.$count('totalBalance'))
+    // // const res2 = await acc?.$create('totalBalance', { ownerId: acc.id, currencyId: 1 });
+    // // // console.log(res2)
+    // const res3 = await acc?.reload({
+    //   include: {
+    //     model: Balance,
+    //     as: 'totalBalance',
+    //     include: [
+    //       {
+    //         model: Currency,
+    //         as: 'currency',
+    //       }
+    //     ]
+    //   }})
+    // // const arr = res3?.totalBalance.map((v) => v.dataValues)
+    // console.log(JSON.stringify(res3, null, 2))
   } catch (error) {
     console.log(error)
   }

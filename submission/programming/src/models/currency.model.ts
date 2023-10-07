@@ -1,5 +1,6 @@
-import {Table, Column, Model, DataType, DeletedAt} from 'sequelize-typescript';
+import {Table, Column, Model, DataType, DeletedAt, HasMany} from 'sequelize-typescript';
 import { DefaultModel } from "./_constrain";
+import { Balance } from './Balance.model';
 
 export interface ICurrency extends DefaultModel {
   name: string;
@@ -22,11 +23,12 @@ export class Currency extends Model<ICurrency> {
   })
   symbol!: string;
 
-  @Column({
-    type: DataType.INTEGER({ length: 11, decimals: 4, unsigned: true })
-  })
+  @Column(DataType.DECIMAL({ unsigned: true, precision: 10, scale: 4 }))
   dollarPrice!: number;
 
   @DeletedAt
   deletedAt?: any;
+
+  @HasMany(() => Balance, 'currencyId')
+  totalOwner!: Currency[];
 }

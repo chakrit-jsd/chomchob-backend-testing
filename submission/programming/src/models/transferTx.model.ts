@@ -25,10 +25,10 @@ export interface ITransferTx extends DefaultModel {
 @Table({ timestamps: true })
 export class TransferTx extends Model<ITransferTx> {
 
-  @Column(DataType.INTEGER({ length: 11, decimals: 4, unsigned: true }))
+  @Column(DataType.DECIMAL({ unsigned: true, precision: 10, scale: 4 }))
   initialAmount!: number
 
-  @Column(DataType.INTEGER({ length: 11, decimals: 4, unsigned: true }))
+  @Column(DataType.DECIMAL({ unsigned: true, precision: 10, scale: 4 }))
   receivedAmount!: number
 
 
