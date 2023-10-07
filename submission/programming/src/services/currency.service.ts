@@ -1,6 +1,5 @@
-import { SqlError } from 'mariadb';
 import { AddCurrencyDTO, UpdateCurrencyDTO } from '../DTOs/currency.dto';
-import { Currency, ICurrency } from './../models/Currency.model';
+import { Currency } from './../models/Currency.model';
 
 export const addCurrency = async (add: AddCurrencyDTO) => {
   try {
@@ -20,7 +19,7 @@ export const addCurrency = async (add: AddCurrencyDTO) => {
 export const updateCurrency = async (update: UpdateCurrencyDTO) => {
   try {
     const curr = await Currency.findByPk(update.id)
-    if (!curr) throw 'not found'
+    if (!curr) throw 'currency not found'
 
     curr.name = update.name || curr.name
     curr.symbol = update.symbol || curr.symbol
@@ -37,7 +36,7 @@ export const updateCurrency = async (update: UpdateCurrencyDTO) => {
 export const deleteCurrency = async (id: number) => {
   try {
     const curr = await Currency.findByPk(id)
-    if (!curr) throw 'not found'
+    if (!curr) throw 'currency not found'
     await curr.destroy()
 
     return curr
@@ -61,21 +60,21 @@ export const getAllCurrency = async (withOwner: boolean = false) => {
   }
 }
 
-interface GetOneCurrencyOp {
+interface GetOneCurrencyOptions {
   id?: number;
   symbol?: string;
   withOwner?: boolean;
 }
 
-export const getOneCurrency = async (options: GetOneCurrencyOp) => {
-  let symbolCap = options.symbol?.toLocaleUpperCase();
+export const getOneCurrency = async (options: GetOneCurrencyOptions) => {
+  const symbolCap = options.symbol?.toLocaleUpperCase();
   try {
     const curr = await Currency.findOne(
       {
         where: options.id ? { id: options.id } : { symbol: symbolCap },
         include : options.withOwner ? ['totalOwner'] : []
       });
-    if (!curr) throw 'not found'
+    if (!curr) throw 'currency not found'
 
     return curr
   } catch (error) {

@@ -1,7 +1,8 @@
-import {Table, Column, Model, DataType, DeletedAt, HasMany} from 'sequelize-typescript';
+import {Table, Column, Model, DataType, DeletedAt, HasMany, Scopes} from 'sequelize-typescript';
 import { Optional } from 'sequelize';
 import { DefaultModel, Role } from './_constrain';
 import { Balance } from './Balance.model';
+import { Currency } from './Currency.model';
 
 
 export interface IAccount extends DefaultModel {
@@ -14,6 +15,30 @@ export interface IAccount extends DefaultModel {
 
 interface IAccountOption extends Optional<IAccount, 'role'> {}
 
+@Scopes(() => ({
+  AL1: {
+    attributes: ['id', 'username', 'firstName', 'lastName']
+  },
+  AL2: {
+    attributes: ['id', 'username', 'firstName', 'lastName', 'createdAt']
+  },
+  IS1: {
+    include: {
+      model: Balance,
+      as: 'totalBalance'
+    }
+  },
+  IS2: {
+    include: {
+      model: Balance,
+      as: 'totalBalance',
+      include: [{
+        model: Currency,
+        as: 'currency'
+      }]
+    }
+  }
+}))
 @Table({ timestamps: true })
 export class Account extends Model<IAccount, IAccountOption> {
 

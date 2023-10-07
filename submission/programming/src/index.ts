@@ -10,6 +10,7 @@ import { ExchangeTx } from './models/ExchangeTx.model';
 import { TransferTx } from './models/TransferTx.model';
 import { seeder } from './utils/seedDB';
 import { addCurrency, deleteCurrency, getAllCurrency, getOneCurrency } from './services/currency.service';
+import { createAccount, getAllAccount, getOneAccout, updateAccount } from './services/account.service';
 
 dotenv.config();
 
@@ -44,10 +45,19 @@ console.log(process.env.DB_NAME);
     // seeder()
     // const res = deleteCurrency(8)
     // console.log( await res)
-    const res = await getAllCurrency(true)
-    // console.log(typeof 1)
-    const res1 = await getOneCurrency({ symbol: 'btc' })
-    console.log(res1)
+    // const res = await getAllCurrency(true)
+    // // console.log(typeof 1)
+    // const res1 = await getOneCurrency({ symbol: 'btc' })
+    // console.log(res1)
+    // const res = await createAccount({
+    //   firstName: '1234',
+    //   lastName: '124',
+    //   username: '1245',
+    //   password: 'asdfasf'
+    // })
+    // const res = await getOneAccout({ id: 1, withBalance: true })
+    // console.log(JSON.stringify(res, null, 2))
+    getAllAccount({ withBalance: true })
     // Currency.create({
     //   name: 'ethereum',
     //   symbol: 'ETH',
