@@ -4,7 +4,8 @@ import { DefaultModel } from "./_constrain";
 import { Currency } from './Currency.model';
 import { Exchange } from './Exchange.model';
 import { Balance } from './Balance.model';
-import { ExchangeTx } from './ExchangeTx.model';
+import { SwapTx } from './SwapTx.model';
+import { Account } from './Account.model';
 
 
 export enum StatusTransferTx {
@@ -14,16 +15,21 @@ export enum StatusTransferTx {
 }
 
 export interface ITransferTx extends DefaultModel {
+  senderId: number;
+  receiverId: number;
   fromAddress: string
   targetAddress: string
+  currencyEx: string;
   exTx?: number
   initialAmount: number
   receivedAmount: number
-  status: StatusTransferTx
+  // status: StatusTransferTx
 }
 
+export interface ItransferTxOption extends Optional<ITransferTx, 'exTx'> {}
+
 @Table({ timestamps: true })
-export class TransferTx extends Model<ITransferTx> {
+export class TransferTx extends Model<ITransferTx, ItransferTxOption> {
 
   @Column(DataType.DECIMAL({ unsigned: true, precision: 10, scale: 4 }))
   initialAmount!: number
@@ -31,19 +37,27 @@ export class TransferTx extends Model<ITransferTx> {
   @Column(DataType.DECIMAL({ unsigned: true, precision: 10, scale: 4 }))
   receivedAmount!: number
 
+  @Column(DataType.STRING)
+  currencyEx!: string
 
-  @BelongsTo(() => Balance, 'formAdress')
+  @BelongsTo(() => Account, 'senderId')
+  sender!: Account
+
+  @BelongsTo(() => Account, 'receiverId')
+  receiver!: Account
+
+  @BelongsTo(() => Balance, 'fromAddress')
   form!: Balance;
 
-  @BelongsTo(() => Balance, 'targetAdress')
+  @BelongsTo(() => Balance, 'targetAddress')
   target!: Balance;
 
-  @BelongsTo(() => ExchangeTx, 'exTx')
-  exchangeTx?: ExchangeTx;
+  @BelongsTo(() => SwapTx, 'exTx')
+  exchangeTx?: SwapTx;
 
-  @Column({
-    type: DataType.ENUM(StatusTransferTx.PENDING, StatusTransferTx.SUCCESSED, StatusTransferTx.FAILED),
-    defaultValue: StatusTransferTx.PENDING,
-  })
-  status!: string;
+  // @Column({
+  //   type: DataType.ENUM(StatusTransferTx.PENDING, StatusTransferTx.SUCCESSED, StatusTransferTx.FAILED),
+  //   defaultValue: StatusTransferTx.PENDING,
+  // })
+  // status!: string;
 }

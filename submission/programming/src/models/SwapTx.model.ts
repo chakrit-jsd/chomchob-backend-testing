@@ -27,7 +27,7 @@ export interface IExchangeTx extends DefaultModel {
 export interface IExchangeTxOption extends Optional<IExchangeTx, 'provider' | 'detail'> {}
 
 @Table({ timestamps: true })
-export class ExchangeTx extends Model<IExchangeTx, IExchangeTxOption> {
+export class SwapTx extends Model<IExchangeTx, IExchangeTxOption> {
 
   @Column(DataType.DECIMAL({ unsigned: true, precision: 16, scale: 4 }))
   rate!: number;
@@ -61,7 +61,7 @@ export class ExchangeTx extends Model<IExchangeTx, IExchangeTxOption> {
   @BelongsTo(() => Account, 'ownerId')
   owner!: Account;
 
-  @BelongsTo(() => Balance, 'formAdress')
+  @BelongsTo(() => Balance, 'fromAdress')
   form!: Balance;
 
   @BelongsTo(() => Balance, 'targetAdress')

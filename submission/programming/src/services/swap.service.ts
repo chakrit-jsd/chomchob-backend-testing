@@ -4,7 +4,7 @@ import { Balance } from "../models/Balance.model";
 import { additionAmount, getCEXWallet, getWalletByOwnerHasCurrency, subtractionAmount } from "./balance.service";
 import { getOneCurrency, getTwoCurrencyForExRateBySymbol } from "./currency.service";
 import { getOneExRate } from "./exchange.service";
-import { createExTx } from "./ExchangeTx.service";
+import { createExTx } from "./swapTx.service";
 interface SwapCurrency {
   accountId: number;
   initSymbol: string;
@@ -21,7 +21,7 @@ export const swapCurrency = async (data: SwapCurrency) => {
     const targetWallet = await getWalletByOwnerHasCurrency({ ownerId: data.accountId, currencyId: targetCurrency.id })
     if (initWallet instanceof Error || targetWallet instanceof Error) throw initWallet instanceof Error ? initWallet : targetWallet;
 
-    if (initWallet.amount < data.amount || data.amount < 0) throw 'The amount is not enough'
+    if (initWallet.amount < data.amount || data.amount < 0) throw 'amount is not enough'
 
     const exRate = await getOneExRate({ initCurrency: initCurrency, targetCurrency: targetCurrency })
     if (exRate instanceof Error) throw exRate;

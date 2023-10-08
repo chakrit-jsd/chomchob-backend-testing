@@ -6,14 +6,14 @@ import { Role } from './models/_constrain';
 import { Currency } from './models/Currency.model';
 import { Exchange } from './models/Exchange.model';
 import { Balance } from './models/Balance.model';
-import { ExchangeTx } from './models/ExchangeTx.model';
 import { TransferTx } from './models/TransferTx.model';
 import { seeder } from './utils/seedDB';
 import { addCurrency, deleteCurrency, getAllCurrency, getOneCurrency } from './services/currency.service';
 import { createAccount, getAllAccount, getOneAccout, updateAccount } from './services/account.service';
-import { getCEXWallet, getWalletByOwnerHasCurrency } from './services/balance.service';
+import { additionAmount, getCEXWallet, getWalletByOwnerHasCurrency } from './services/balance.service';
 import { getAllExRate, getOneExRate } from './services/exchange.service';
 import { swapCurrency } from './services/swap.service';
+import { transferCurrency } from './services/transfer.service';
 
 dotenv.config();
 
@@ -80,6 +80,33 @@ console.log(process.env.DB_NAME);
     //   username: '1245',
     //   password: 'asdfasf'
     // })
+      try {
+        // const t = await sequelize.transaction(async (tt) => {
+        //   const w = await getWalletByOwnerHasCurrency({ ownerId: 2, currencyId: 1})
+        //   if (w instanceof Error) throw w
+        //   const b = await additionAmount({wallet: w, amount: 1000 }, tt)
+        //   if (b instanceof Error) throw b
+
+        // })
+      // //   // console.log(b)
+        for (let i = 0; i < 1000; i++) {
+          console.time('ss')
+          const res = await transferCurrency({
+            senderId: 2,
+            receiverId: 1,
+            initSymbol: 'btc',
+            targetSymbol: 'xrp',
+            initAmount: 1,
+          })
+          console.log(res)
+          console.timeEnd('ss')
+        }
+
+      } catch (error) {
+        console.log(error)
+      }
+      // const res = await transferCurrency({ senderId: 2, receiverId: 1, initAmount: 1, initSymbol: 'btc', targetSymbol: 'eth'})
+      // console.log(res)
     // const res = await getOneAccout({ id: 1, withBalance: true })
     // console.log(JSON.stringify(res, null, 2))
     // getAllAccount({ withBalance: true })

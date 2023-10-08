@@ -4,7 +4,7 @@ import { Account } from '../models/Account.model';
 import { Currency } from '../models/Currency.model';
 import { Balance } from '../models/Balance.model';
 import { Exchange } from '../models/Exchange.model';
-import { ExchangeTx } from '../models/ExchangeTx.model';
+import { ExchangeTx } from '../models/SwapTx.model';
 import { TransferTx } from '../models/TransferTx.model';
 dotenv.config();
 

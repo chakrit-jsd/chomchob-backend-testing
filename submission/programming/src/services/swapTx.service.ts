@@ -1,5 +1,5 @@
 import { Transaction } from "sequelize"
-import { ExchangeTx, IExchangeTxOption } from "../models/ExchangeTx.model"
+import { IExchangeTxOption, SwapTx } from "../models/SwapTx.model"
 
 
 interface CreateExTx extends IExchangeTxOption {
@@ -7,7 +7,7 @@ interface CreateExTx extends IExchangeTxOption {
 }
 export const createExTx = async (data: CreateExTx, transaction: Transaction) => {
   try {
-    const tx = ExchangeTx.create(data, { transaction })
+    const tx = SwapTx.create(data, { transaction })
     return tx
   } catch (error) {
     if (error instanceof Error) return error
