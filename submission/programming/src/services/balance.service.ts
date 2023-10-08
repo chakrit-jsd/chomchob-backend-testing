@@ -27,7 +27,7 @@ export const additionAmount = async (data: UpdateWallet, transaction: Transactio
   try {
     if (data.amount < 0) throw 'invalid amount'
     const wallet = await data.wallet.reload()
-    wallet.amount = wallet.amount + data.amount
+    wallet.amount = Number(wallet.amount) + Number(data.amount)
 
     return await wallet.save({ transaction })
   } catch (error) {
@@ -40,7 +40,8 @@ export const subtractionAmount = async (data: UpdateWallet, transaction: Transac
   try {
     if (-data.amount > 0) throw 'invalid amount'
     const wallet = await data.wallet.reload()
-    wallet.amount = wallet.amount + -data.amount
+    if (data.amount > wallet.amount) throw 'CEX unavailable'
+    wallet.amount = Number(wallet.amount) - Number(data.amount)
 
     return await wallet.save({ transaction })
   } catch (error) {

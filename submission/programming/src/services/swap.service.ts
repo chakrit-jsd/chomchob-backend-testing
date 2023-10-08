@@ -5,7 +5,6 @@ import { additionAmount, getCEXWallet, getWalletByOwnerHasCurrency, subtractionA
 import { getOneCurrency, getTwoCurrencyForExRateBySymbol } from "./currency.service";
 import { getOneExRate } from "./exchange.service";
 import { createExTx } from "./ExchangeTx.service";
-
 interface SwapCurrency {
   accountId: number;
   initSymbol: string;
@@ -50,9 +49,9 @@ export const swapCurrency = async (data: SwapCurrency) => {
         receivedAmount: exAmount,
       }, transaction)
       if (exTx instanceof Error) throw exTx;
+      return exTx
     })
-    console.log(result)
-    return true;
+    return result;
   } catch (error) {
     if (error instanceof Error) return error
     return new Error(error as string)
