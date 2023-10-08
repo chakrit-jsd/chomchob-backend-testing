@@ -58,7 +58,7 @@ export class Account extends Model<IAccount, IAccountOption> {
   lastName!: string;
 
   @Column({
-    type: DataType.ENUM(Role.ADMIN, Role.USER),
+    type: DataType.ENUM<Role>(Role.ADMIN, Role.USER, Role.CEX),
     defaultValue: Role.USER,
   })
   role!: string;

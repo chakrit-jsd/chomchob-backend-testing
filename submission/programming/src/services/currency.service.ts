@@ -1,5 +1,7 @@
+import { where } from 'sequelize';
 import { AddCurrencyDTO, UpdateCurrencyDTO } from '../DTOs/currency.dto';
 import { Currency } from './../models/Currency.model';
+import { createCEXWallet } from './balance.service';
 import { createNewExchange } from './exchange.service';
 
 export const addCurrency = async (data: AddCurrencyDTO) => {
@@ -10,7 +12,13 @@ export const addCurrency = async (data: AddCurrencyDTO) => {
       dollarPrice: data.dollarPrice,
     })
     await createNewExchange(curr.id)
-    return curr
+    const wallet = await createCEXWallet({ currencyId: curr.id, amount: data.amount})
+    if (wallet instanceof Error) throw wallet
+
+    return {
+      currency: curr,
+      CEXWallet: wallet,
+    }
   } catch (error) {
     if (error instanceof Error) return error
     return new Error(error as string)
@@ -78,6 +86,30 @@ export const getOneCurrency = async (options: GetOneCurrencyOptions) => {
     if (!curr) throw 'currency not found'
 
     return curr
+  } catch (error) {
+    if (error instanceof Error) return error
+    return new Error(error as string)
+  }
+}
+
+interface GetTwoCurrencyForExRateBySymbol {
+  initSymbol: string;
+  targetSymbol: string;
+}
+interface TwoCurrencyReturn {
+  initCurrency: Currency;
+  targetCurrency: Currency;
+}
+export const getTwoCurrencyForExRateBySymbol = async (data: GetTwoCurrencyForExRateBySymbol): Promise<TwoCurrencyReturn | Error> => {
+  try {
+    const init = await Currency.findOne({ where: { symbol: data.initSymbol.toLocaleUpperCase() }})
+    const target = await Currency.findOne({ where: { symbol: data.targetSymbol.toLocaleUpperCase() }})
+    if (!init || !target) throw 'not found'
+    const twoCureency: TwoCurrencyReturn = {
+      initCurrency: init,
+      targetCurrency: target,
+    }
+    return twoCureency;
   } catch (error) {
     if (error instanceof Error) return error
     return new Error(error as string)

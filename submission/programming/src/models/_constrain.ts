@@ -8,6 +8,7 @@ export enum ModelNames {
 export enum Role {
   USER = 'user',
   ADMIN = 'admin',
+  CEX = 'CEX',
 }
 
 export interface DefaultModel {

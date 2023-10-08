@@ -11,6 +11,7 @@ export interface IBalance extends Omit<DefaultModel, 'id'> {
   ownerId: number;
   currencyId: number;
   amount: number;
+  tier: string;
 }
 
 interface IBalanceOption extends Optional<IBalance, 'address' | 'amount'> {}
@@ -25,11 +26,16 @@ export class Balance extends Model<IBalance, IBalanceOption> {
   address!: string;
 
   @Column({
-    type: DataType.DECIMAL({ unsigned: true, precision: 10, scale: 4 }),
+    type: DataType.DECIMAL({ unsigned: true, precision: 16, scale: 4 }),
     defaultValue: 0,
   })
   amount!: number;
 
+  @Column({
+    type: DataType.ENUM('CEX', 'user'),
+    defaultValue: 'user'
+  })
+  tier!: string
 
   @BelongsTo(() => Account, 'ownerId')
   owner!: Account;

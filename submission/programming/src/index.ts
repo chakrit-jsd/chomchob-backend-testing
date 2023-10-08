@@ -11,7 +11,9 @@ import { TransferTx } from './models/TransferTx.model';
 import { seeder } from './utils/seedDB';
 import { addCurrency, deleteCurrency, getAllCurrency, getOneCurrency } from './services/currency.service';
 import { createAccount, getAllAccount, getOneAccout, updateAccount } from './services/account.service';
-import { getWalletByOwnerHasCurrency } from './services/balance.service';
+import { getCEXWallet, getWalletByOwnerHasCurrency } from './services/balance.service';
+import { getAllExRate, getOneExRate } from './services/exchange.service';
+import { swapCurrency } from './services/swap.service';
 
 dotenv.config();
 
@@ -33,19 +35,19 @@ console.log(process.env.DB_NAME);
   try {
     // sequelize.sync()
     await sequelize.authenticate()
-    await sequelize.drop()
-    await Account.sync()
-    await Currency.sync()
-    await Exchange.sync()
-    // await Balance.drop()
-    await Balance.sync()
-    // await ExchangeTx.drop()
-    await ExchangeTx.sync()
-    await TransferTx.sync()
+    // await sequelize.drop()
+    // await Account.sync()
+    // await Currency.sync()
+    // await Exchange.sync()
+    // // await Balance.drop()
+    // await Balance.sync()
+    // // await ExchangeTx.drop()
+    // await ExchangeTx.sync()
+    // await TransferTx.sync()
     // addCurrency({ })
     // updateCurrency({ })
     // await sequelize.sync()
-    seeder()
+    // seeder()
     // await addCurrency({
     //   name: 'aaa',
     //   symbol: 'aaa',
@@ -103,7 +105,14 @@ console.log(process.env.DB_NAME);
     //   firstName: 'testtest',
     //   lastName: 'testtest',
     // })
-
+    // const c = await addCurrency({
+    //   name: 'ufa88',
+    //   symbol: 'UFA88',
+    //   dollarPrice: 88
+    // })
+    // console.log(c)
+    // const res = await getAllExRate()
+    // console.log(res)
     // const acc = await Account.findByPk(1)
     // console.log(await acc?.$count('totalBalance'))
     // // const res2 = await acc?.$create('totalBalance', { ownerId: acc.id, currencyId: 1 });
@@ -121,6 +130,9 @@ console.log(process.env.DB_NAME);
     //   }})
     // // const arr = res3?.totalBalance.map((v) => v.dataValues)
     // console.log(JSON.stringify(res3, null, 2))
+    // const res = await getCEXWallet({ initCurrencyId: 1, targetCurrencyId: 2 })
+    // console.log(res)
+    // swapCurrency()
   } catch (error) {
     console.log(error)
   }

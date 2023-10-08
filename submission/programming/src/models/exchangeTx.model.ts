@@ -4,6 +4,7 @@ import { DefaultModel } from "./_constrain";
 import { Currency } from './Currency.model';
 import { Exchange } from './Exchange.model';
 import { Balance } from './Balance.model';
+import { Account } from './Account.model';
 
 export enum StatusExchangeTx {
   PENDING = 'pending',
@@ -11,32 +12,40 @@ export enum StatusExchangeTx {
   FAILED = 'failed'
 }
 export interface IExchangeTx extends DefaultModel {
-  exchangeId: number;
+  ownerId: number;
   fromAddress: string;
   targetAddress: string;
+  rate: number;
+  currencyEx: string;
   initialAmount: number;
   receivedAmount: number;
-  status: StatusExchangeTx;
+  // status: StatusExchangeTx;
   provider: string;
   detail: string;
 }
 
+export interface IExchangeTxOption extends Optional<IExchangeTx, 'provider' | 'detail'> {}
 
 @Table({ timestamps: true })
-export class ExchangeTx extends Model<IExchangeTx> {
+export class ExchangeTx extends Model<IExchangeTx, IExchangeTxOption> {
 
+  @Column(DataType.DECIMAL({ unsigned: true, precision: 16, scale: 4 }))
+  rate!: number;
 
-  @Column(DataType.DECIMAL({ unsigned: true, precision: 10, scale: 4 }))
+  @Column(DataType.STRING)
+  currencyEx!: string
+
+  @Column(DataType.DECIMAL({ unsigned: true, precision: 16, scale: 4 }))
   initialAmount!: number
 
-  @Column(DataType.DECIMAL({ unsigned: true, precision: 10, scale: 4 }))
+  @Column(DataType.DECIMAL({ unsigned: true, precision: 16, scale: 4 }))
   receivedAmount!: number
 
-  @Column({
-    type: DataType.ENUM(StatusExchangeTx.PENDING, StatusExchangeTx.SUCCESSED, StatusExchangeTx.FAILED),
-    defaultValue: StatusExchangeTx.PENDING,
-  })
-  status!: string;
+  // @Column({
+  //   type: DataType.ENUM(StatusExchangeTx.PENDING, StatusExchangeTx.SUCCESSED, StatusExchangeTx.FAILED),
+  //   defaultValue: StatusExchangeTx.PENDING,
+  // })
+  // status!: string;
 
   @Column({
     type: DataType.STRING,
@@ -49,8 +58,8 @@ export class ExchangeTx extends Model<IExchangeTx> {
   detail?: string;
 
 
-  @BelongsTo(() => Exchange, 'exchangeId')
-  exchange!: Exchange;
+  @BelongsTo(() => Account, 'ownerId')
+  owner!: Account;
 
   @BelongsTo(() => Balance, 'formAdress')
   form!: Balance;
