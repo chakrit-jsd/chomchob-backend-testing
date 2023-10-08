@@ -13,7 +13,7 @@ export interface IBalance extends Omit<DefaultModel, 'id'> {
   amount: number;
 }
 
-interface IBalanceOption extends Optional<IBalance, 'address'> {}
+interface IBalanceOption extends Optional<IBalance, 'address' | 'amount'> {}
 
 @Table({ timestamps: true })
 export class Balance extends Model<IBalance, IBalanceOption> {
@@ -24,8 +24,12 @@ export class Balance extends Model<IBalance, IBalanceOption> {
   })
   address!: string;
 
-  @Column(DataType.DECIMAL({ unsigned: true, precision: 10, scale: 4 }))
+  @Column({
+    type: DataType.DECIMAL({ unsigned: true, precision: 10, scale: 4 }),
+    defaultValue: 0,
+  })
   amount!: number;
+
 
   @BelongsTo(() => Account, 'ownerId')
   owner!: Account;

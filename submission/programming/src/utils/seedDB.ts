@@ -4,6 +4,7 @@ import { Account } from "../models/Account.model";
 import { Balance } from "../models/Balance.model";
 import { Currency } from "../models/Currency.model";
 import { addCurrency } from "../services/currency.service";
+import { createNewExchange } from "../services/exchange.service";
 
 const cyptoData: {[key: string]: string} = {
   BTC: 'Bitcoin',
@@ -33,7 +34,8 @@ export const seeder = async () => {
       symbol: res.data.asset_id_base,
       dollarPrice: res.data.rate.toFixed(4),
     }
-    await addCurrency(add)
-
+    const curr = await addCurrency(add)
+    // if (curr instanceof Error) continue;
+    // await createNewExchange(curr.id)
   }
 }

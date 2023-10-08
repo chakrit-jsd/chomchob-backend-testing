@@ -11,6 +11,7 @@ import { TransferTx } from './models/TransferTx.model';
 import { seeder } from './utils/seedDB';
 import { addCurrency, deleteCurrency, getAllCurrency, getOneCurrency } from './services/currency.service';
 import { createAccount, getAllAccount, getOneAccout, updateAccount } from './services/account.service';
+import { getWalletByOwnerHasCurrency } from './services/balance.service';
 
 dotenv.config();
 
@@ -32,18 +33,40 @@ console.log(process.env.DB_NAME);
   try {
     // sequelize.sync()
     await sequelize.authenticate()
-    // await sequelize.drop()
+    await sequelize.drop()
     await Account.sync()
     await Currency.sync()
     await Exchange.sync()
+    // await Balance.drop()
     await Balance.sync()
+    // await ExchangeTx.drop()
     await ExchangeTx.sync()
     await TransferTx.sync()
     // addCurrency({ })
     // updateCurrency({ })
     // await sequelize.sync()
-    // seeder()
-    // const res = deleteCurrency(8)
+    seeder()
+    // await addCurrency({
+    //   name: 'aaa',
+    //   symbol: 'aaa',
+    //   dollarPrice: 123.41223123
+    // })
+    // await addCurrency({
+    //   name: 'bbb',
+    //   symbol: 'bbb',
+    //   dollarPrice: 122223.41223123
+    // })
+    // await addCurrency({
+    //   name: 'ccc',
+    //   symbol: 'ccc',
+    //   dollarPrice: 122223.41223123
+    // })
+    // await addCurrency({
+    //   name: 'DDdd',
+    //   symbol: 'DDD',
+    //   dollarPrice: 122223.41223123
+    // })
+    // // const res = deleteCurrency(8)
     // console.log( await res)
     // const res = await getAllCurrency(true)
     // // console.log(typeof 1)
@@ -57,7 +80,7 @@ console.log(process.env.DB_NAME);
     // })
     // const res = await getOneAccout({ id: 1, withBalance: true })
     // console.log(JSON.stringify(res, null, 2))
-    getAllAccount({ withBalance: true })
+    // getAllAccount({ withBalance: true })
     // Currency.create({
     //   name: 'ethereum',
     //   symbol: 'ETH',
@@ -69,7 +92,11 @@ console.log(process.env.DB_NAME);
     // })
     // const res = await Exchange.findOne({ where: { id: 1 }, include: ['initialCurrency'] })
     // console.log(res)
-
+    // const res = await getWalletByOwnerHasCurrency({
+    //   currencyId: 1,
+    //   onwerId: 1
+    // })
+    // console.log(res)
     // Account.create({
     //   username: 'test123',
     //   password: 'test1234',

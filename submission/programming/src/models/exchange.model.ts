@@ -4,7 +4,6 @@ import { DefaultModel } from "./_constrain";
 import { Currency } from './Currency.model';
 
 export enum AdjustType {
-  NULL = 'null',
   PERCENTAGE = 'percentage',
   PLAIN = 'plain',
 }
@@ -25,8 +24,8 @@ export class Exchange extends Model<IExchange, IExchangeOption> {
   adjust!: number;
 
   @Column({
-    type: DataType.ENUM(AdjustType.NULL, AdjustType.PERCENTAGE, AdjustType.PLAIN),
-    defaultValue: AdjustType.NULL,
+    type: DataType.ENUM(AdjustType.PERCENTAGE, AdjustType.PLAIN),
+    defaultValue: null,
   })
   adjustType!: string;
 
