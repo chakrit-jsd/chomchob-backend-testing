@@ -1,16 +1,22 @@
 import { ChangePasswordDTO } from './../DTOs/account.dto';
 import { CreateAccountDTO, UpdateAccountDTO } from "../DTOs/account.dto";
-import { Account } from "../models/Account.model";
+import { Account, IAccount } from "../models/Account.model";
 import bcrypt from 'bcrypt';
 
-export const createAccount = async (data: CreateAccountDTO) => {
+interface CreateAccountReturn extends Pick<IAccount, 'id' | 'username' | 'firstName' | 'lastName' | 'createdAt'> {}
+export const createAccount = async (data: CreateAccountDTO): Promise<CreateAccountReturn | Error> => {
   // const saltRound = Math.floor(Math.random() * (11 - 8)) + 8
   try {
     const hadhPassword = await bcrypt.hash(data.password, 10)
     data.password = hadhPassword;
     const acc = await Account.create(data)
-
-    return acc
+    return {
+      id: acc.id,
+      username: acc.username,
+      firstName: acc.firstName,
+      lastName: acc.lastName,
+      createdAt: acc.createdAt,
+    }
   } catch (error) {
     if (error instanceof Error) return error
     return new Error(error as string)
@@ -50,11 +56,13 @@ export const changePassword = async (data: ChangePasswordDTO) => {
 interface GetOneAccountOptions {
   id?: number;
   username?: string;
-  withBalance?: boolean
+  withBalance?: boolean,
+  scope?: 'AL1' | 'AL2'
 }
 
-export const getOneAccout = async (options: GetOneAccountOptions) => {
-  const scopes: string[] = ['AL1']
+export const getOneAccount = async (options: GetOneAccountOptions) => {
+  const scopes: string[] = [];
+  if (options.scope) scopes.push(options.scope)
   if (options.withBalance) scopes.push('IS2')
   try {
     const acc = await Account.scope(scopes).findOne({

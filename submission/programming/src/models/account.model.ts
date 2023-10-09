@@ -1,4 +1,4 @@
-import {Table, Column, Model, DataType, DeletedAt, HasMany, Scopes} from 'sequelize-typescript';
+import { Table, Column, Model, DataType, DeletedAt, HasMany, Scopes, NotNull, AllowNull } from 'sequelize-typescript';
 import { Optional } from 'sequelize';
 import { DefaultModel, Role } from './_constrain';
 import { Balance } from './Balance.model';
@@ -48,13 +48,22 @@ export class Account extends Model<IAccount, IAccountOption> {
   })
   username!: string;
 
-  @Column(DataType.STRING(60))
+  @Column({
+    type: DataType.STRING(60),
+    unique: true,
+  })
   password!: string;
 
-  @Column(DataType.STRING(30))
+  @Column({
+    type: DataType.STRING(30),
+    allowNull: false,
+  })
   firstName!: string;
 
-  @Column(DataType.STRING(30))
+  @Column({
+    type: DataType.STRING(30),
+    unique: true,
+  })
   lastName!: string;
 
   @Column({

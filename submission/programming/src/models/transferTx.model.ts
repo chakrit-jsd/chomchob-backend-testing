@@ -1,4 +1,4 @@
-import {Table, Column, Model, DataType, DeletedAt, ForeignKey, BelongsTo, AllowNull} from 'sequelize-typescript';
+import {Table, Column, Model, DataType, DeletedAt, ForeignKey, BelongsTo, AllowNull, Scopes} from 'sequelize-typescript';
 import { Optional } from 'sequelize';
 import { DefaultModel } from "./_constrain";
 import { Currency } from './Currency.model';
@@ -28,13 +28,19 @@ export interface ITransferTx extends DefaultModel {
 
 export interface ItransferTxOption extends Optional<ITransferTx, 'exTx'> {}
 
+@Scopes(() => ({
+  ISTX: {
+    include: ['exchangeTx']
+  }
+}))
+
 @Table({ timestamps: true })
 export class TransferTx extends Model<ITransferTx, ItransferTxOption> {
 
-  @Column(DataType.DECIMAL({ unsigned: true, precision: 10, scale: 4 }))
+  @Column(DataType.DECIMAL({ unsigned: true, precision: 16, scale: 4 }))
   initialAmount!: number
 
-  @Column(DataType.DECIMAL({ unsigned: true, precision: 10, scale: 4 }))
+  @Column(DataType.DECIMAL({ unsigned: true, precision: 16, scale: 4 }))
   receivedAmount!: number
 
   @Column(DataType.STRING)

@@ -4,7 +4,7 @@ import { Account } from '../models/Account.model';
 import { Currency } from '../models/Currency.model';
 import { Balance } from '../models/Balance.model';
 import { Exchange } from '../models/Exchange.model';
-import { ExchangeTx } from '../models/SwapTx.model';
+import { SwapTx } from '../models/SwapTx.model';
 import { TransferTx } from '../models/TransferTx.model';
 dotenv.config();
 
@@ -15,7 +15,7 @@ const sequelize = new Sequelize({
   username: process.env.DB_USER,
   password: process.env.DB_PASS,
   port: Number(process.env.DB_PORT),
-  models: [Account, Currency, Balance, Exchange, ExchangeTx, TransferTx],
+  models: [Account, Currency, Balance, Exchange, SwapTx, TransferTx],
   // logging: false,
   pool: {
     max: 5,

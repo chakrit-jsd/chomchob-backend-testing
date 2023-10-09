@@ -61,9 +61,9 @@ export class SwapTx extends Model<IExchangeTx, IExchangeTxOption> {
   @BelongsTo(() => Account, 'ownerId')
   owner!: Account;
 
-  @BelongsTo(() => Balance, 'fromAdress')
+  @BelongsTo(() => Balance, 'fromAddress')
   form!: Balance;
 
-  @BelongsTo(() => Balance, 'targetAdress')
+  @BelongsTo(() => Balance, 'targetAddress')
   target!: Balance;
 }

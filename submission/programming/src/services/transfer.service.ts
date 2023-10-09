@@ -28,7 +28,7 @@ export const transferCurrency = async (data: TransferCurrency) => {
 
     const senderWallet = await getWalletByOwnerHasCurrency({ ownerId: data.senderId, currencyId: currency.id })
     if (senderWallet instanceof Error) throw senderWallet;
-    console.log(amountForSend, senderWallet.amount)
+    // console.log(amountForSend, senderWallet.amount)
     if (amountForSend > senderWallet.amount) throw 'amount is not enough'
 
     const receiverWallet = await getWalletByOwnerHasCurrency({ ownerId: data.receiverId, currencyId: currency.id })
@@ -44,12 +44,12 @@ export const transferCurrency = async (data: TransferCurrency) => {
       const tx = await createTransferTx({
         senderId: data.senderId,
         receiverId: data.receiverId,
-        fromAddress: senderWallet.address,
+        fromAddress: swapTx?.dataValues.fromAddress || senderWallet.address,
         targetAddress: receiverWallet.address,
         currencyEx: data.initSymbol.toLocaleUpperCase() + '/' + data.targetSymbol.toLocaleUpperCase(),
         initialAmount: data.initAmount,
         receivedAmount: amountForSend,
-        exTx: swapTx.id || null
+        exTx: swapTx?.id || null
       }, transaction)
       if (tx instanceof Error) throw tx
       return tx

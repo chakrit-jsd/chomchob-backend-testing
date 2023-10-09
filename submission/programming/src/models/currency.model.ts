@@ -23,7 +23,7 @@ export class Currency extends Model<ICurrency> {
   })
   symbol!: string;
 
-  @Column(DataType.DECIMAL({ unsigned: true, precision: 10, scale: 4 }))
+  @Column(DataType.DECIMAL({ unsigned: true, precision: 16, scale: 4 }))
   dollarPrice!: number;
 
   @DeletedAt
