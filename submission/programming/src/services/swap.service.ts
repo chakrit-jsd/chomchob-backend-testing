@@ -45,7 +45,7 @@ export const swapCurrency = async (data: SwapCurrency) => {
       if (uCEXinitWallet instanceof Error) throw uCEXinitWallet;
 
       // 3. amount currency target cal by exchange rate
-      const exAmount = exRate.finalRate * data.amount;
+      const exAmount = Number(exRate.finalRate * data.amount);
 
       // 4. subtraction amount CEX wallet for send to target wallet
       const uCEXtargetWallet = await subtractionAmount({ wallet: CEX.targetWallet, amount: exAmount }, transaction)

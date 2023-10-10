@@ -11,7 +11,6 @@ export const getWallet = <RequestHandler<unknown, IResponse>>(
     const accWithBalance = await getOneAccount({ id: user.id, withBalance: true, scope: 'AL1' })
     if (accWithBalance instanceof Error) return next(accWithBalance)
 
-
     return res.status(200).json({
       success: true,
       code: 200,
@@ -46,7 +45,7 @@ export const postTransfer = <RequestHandler<unknown, IResponse, IReqBodyTransfer
     return res.status(201).json({
       success: true,
       code: 201,
-      message: `sent ${initCurrency}/${targetCurrency} to ${receiverUsername} success`,
+      message: `you sent ${initCurrency.toLocaleUpperCase()}/${targetCurrency.toLocaleUpperCase()} to ${receiverUsername} success`,
       data: transferTx
     })
   }
@@ -72,7 +71,7 @@ export const postSwapCurrency = <RequestHandler<unknown, IResponse, IReqBodySwap
     return res.status(201).json({
       success: true,
       code: 201,
-      message: `you swap ${initCurrency.toLocaleUpperCase()} to ${targetCurrency.toLocaleUpperCase()} and received ${swapTx.receivedAmount} ${targetCurrency.toLocaleUpperCase()}}`,
+      message: `you swap ${initCurrency.toLocaleUpperCase()} to ${targetCurrency.toLocaleUpperCase()} and received ${swapTx.receivedAmount} ${targetCurrency.toLocaleUpperCase()}`,
       data: swapTx,
     })
   }

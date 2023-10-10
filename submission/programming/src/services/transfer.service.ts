@@ -38,7 +38,7 @@ export const transferCurrency = async (data: TransferCurrency) => {
       const uSenderWallet = await subtractionAmount({ wallet: senderWallet, amount: amountForSend }, transaction)
       if (uSenderWallet instanceof Error) throw uSenderWallet;
 
-      const uReceiverWallet = await additionAmount({ wallet: receiverWallet, amount: amountForSend}, transaction)
+      const uReceiverWallet = await additionAmount({ wallet: receiverWallet, amount: amountForSend }, transaction)
       if (uReceiverWallet instanceof Error) throw uReceiverWallet;
 
       const tx = await createTransferTx({

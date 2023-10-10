@@ -20,42 +20,25 @@ enum SpecificQuery {
 
 interface GetAllTransferTx {
   accountId: number;
+  type: 'sent' | 'received';
   order?: ['updatedAt', 'DESC' | 'ASC'];
   limit?: number;
   page?: number;
-  specific?: 'sent' | 'received';
 }
 interface GetAllTransferTxReturn {
   sent: TransferTx[];
   received: TransferTx[];
 }
-export const getAllTransferTx = async (data: GetAllTransferTx): Promise<GetAllTransferTxReturn | Error> => {
+export const getAllTransferTx = async (data: GetAllTransferTx): Promise<TransferTx[] | Error> => {
   try {
-    let senderTx;
-    if (!data.specific || data.specific === 'sent') {
-      senderTx = await TransferTx.scope('ISTX').findAll({
-        where: { senderId: data.accountId },
-        order: [data.order || ['updatedAt', 'DESC']],
-        limit: data.limit || 20,
-        offset: (data.page ||  1) - 1,
-      })
+    const tx = await TransferTx.scope('ISTX').findAll({
+      where: data.type === 'sent' ? { senderId: data.accountId } : { receiverId: data.accountId },
+      order: [data.order || ['updatedAt', 'DESC']],
+      limit: data.limit || 20,
+      offset: (data.page ||  1) - 1,
 
-    }
-    let receiverTx;
-    if (!data.specific || data.specific === 'received') {
-      receiverTx = await TransferTx.scope('ISTX').findAll({
-        where: { receiverId: data.accountId },
-        order: [data.order || ['updatedAt', 'DESC']],
-        limit: data.limit || 20,
-        offset: (data.page ||  1) - 1,
-      })
-    }
-
-    const rData: GetAllTransferTxReturn = {
-      sent: senderTx || [],
-      received: receiverTx || [],
-    }
-    return rData;
+    })
+    return tx;
   } catch (error) {
     if (error instanceof Error) return error
     return new Error(error as string)
