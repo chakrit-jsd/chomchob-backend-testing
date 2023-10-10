@@ -20,7 +20,6 @@ services:
       - 3001:3000
     depends_on:
       - redisDB
-      - mariaDB
 
   redisDB:
     image: redis:latest

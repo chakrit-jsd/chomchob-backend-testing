@@ -32,9 +32,11 @@ interface IAccountOption extends Optional<IAccount, 'role'> {}
     include: {
       model: Balance,
       as: 'totalBalance',
+      attributes: ['address', 'amount', 'updatedAt'],
       include: [{
         model: Currency,
-        as: 'currency'
+        as: 'currency',
+        attributes: ['id', 'name', 'symbol', 'dollarPrice', 'updatedAt']
       }]
     }
   }

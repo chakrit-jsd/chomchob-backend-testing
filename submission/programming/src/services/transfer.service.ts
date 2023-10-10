@@ -6,7 +6,7 @@ import { swapCurrency } from "./swap.service";
 import { createTransferTx } from "./transferTx.service";
 
 
-interface TransferCurrency {
+export interface TransferCurrency {
   senderId: number;
   receiverId: number;
   initSymbol: string;

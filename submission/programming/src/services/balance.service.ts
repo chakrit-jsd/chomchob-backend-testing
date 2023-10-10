@@ -23,27 +23,27 @@ interface UpdateWallet {
   wallet: Balance;
   amount: number;
 }
-export const additionAmount = async (data: UpdateWallet, transaction: Transaction) => {
+export const additionAmount = async (data: UpdateWallet, transaction?: Transaction) => {
   try {
     if (data.amount < 0) throw 'invalid amount'
     const wallet = await data.wallet.reload()
     wallet.amount = Number(wallet.amount) + Number(data.amount)
-
-    return await wallet.save({ transaction })
+    console.log('addddd', wallet.address, wallet.amount)
+    return await wallet.save({ transaction: transaction || null })
   } catch (error) {
     if (error instanceof Error) return error
     return new Error(error as string)
   }
 }
 
-export const subtractionAmount = async (data: UpdateWallet, transaction: Transaction) => {
+export const subtractionAmount = async (data: UpdateWallet, transaction?: Transaction) => {
   try {
     if (-data.amount > 0) throw 'invalid amount'
     const wallet = await data.wallet.reload()
     if (data.amount > wallet.amount) throw 'CEX unavailable'
     wallet.amount = Number(wallet.amount) - Number(data.amount)
-
-    return await wallet.save({ transaction })
+    console.log('subbbbb', wallet.address , wallet.amount)
+    return await wallet.save({ transaction: transaction || null })
   } catch (error) {
     if (error instanceof Error) return error
     return new Error(error as string)

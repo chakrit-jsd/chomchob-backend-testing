@@ -56,8 +56,8 @@ export async function getOneExRate(data: GetOneExRateInstance): Promise<GetOneRa
     }
     const exRate: GetOneRateReturn = {
       exchange: init.symbol + '/' + target.symbol,
-      baseRate: Number(baseRate.toFixed(4)),
-      finalRate: Number(finalRate.toFixed(4)),
+      baseRate: Number(baseRate.toFixed(8)),
+      finalRate: Number(finalRate.toFixed(8)),
       addjust: ex.adjust,
       addjustType: ex.adjustType,
       time: new Date(Math.max(new Date(init.updatedAt).getTime(), new Date(target.updatedAt).getTime()))
