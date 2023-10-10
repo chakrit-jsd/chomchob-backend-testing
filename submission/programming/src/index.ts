@@ -3,6 +3,7 @@ import dotenv from 'dotenv';
 import sequelize from './databases/connect.sequelize';
 import config from './configs/app.config'
 import { getOneAccount } from './services/account.service';
+import { additionAmount, getWalletByOwnerHasCurrency } from './services/balance.service';
 
 dotenv.config();
 const app = express();
@@ -12,6 +13,7 @@ const startServer = async () => {
 
   try {
     await sequelize.authenticate()
+
     const port = Number(process.env.BACKEND_PORT || 3000);
     app.listen(port, () => {
       console.log(`App listening port: ${port}`)

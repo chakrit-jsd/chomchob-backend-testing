@@ -52,3 +52,28 @@ export const postTransfer = <RequestHandler<unknown, IResponse, IReqBodyTransfer
   }
 )
 
+interface IReqBodySwap {
+  initCurrency: string;
+  targetCurrency: string;
+  initAmount: number;
+}
+
+export const postSwapCurrency = <RequestHandler<unknown, IResponse, IReqBodySwap>>(
+  async (req, res, next) => {
+    const user = req.user as Account
+    const { initAmount, initCurrency, targetCurrency } = req.body
+    const swapTx = await swapCurrency({
+      accountId: user.id,
+      initSymbol: initCurrency,
+      targetSymbol: targetCurrency,
+      amount: initAmount
+    })
+    if (swapTx instanceof Error) return next(swapTx);
+    return res.status(201).json({
+      success: true,
+      code: 201,
+      message: `you swap ${initCurrency.toLocaleUpperCase()} to ${targetCurrency.toLocaleUpperCase()} and received ${swapTx.receivedAmount} ${targetCurrency.toLocaleUpperCase()}}`,
+      data: swapTx,
+    })
+  }
+)
