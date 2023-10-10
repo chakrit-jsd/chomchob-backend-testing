@@ -1,3 +1,4 @@
+import { Transaction } from "sequelize"
 import { Currency } from "../models/Currency.model"
 import { AdjustType, Exchange } from "../models/Exchange.model"
 import { getAllCurrency, getOneCurrency } from "./currency.service"

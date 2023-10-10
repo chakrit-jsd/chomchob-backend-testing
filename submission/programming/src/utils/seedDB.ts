@@ -4,7 +4,7 @@ import { AddCurrencyDTO } from "../DTOs/currency.dto";
 import { Account } from "../models/Account.model";
 import { Balance } from "../models/Balance.model";
 import { Currency } from "../models/Currency.model";
-import { addCurrency } from "../services/currency.service";
+import { IAddNewCurrency, addCurrency } from "../services/currency.service";
 import { createNewExchange } from "../services/exchange.service";
 import { Role } from "../models/_constrain";
 
@@ -38,7 +38,7 @@ export const seeder = async () => {
 
     const res = await axios.get(`https://rest.coinapi.io/v1/exchangerate/${i}/USD`, { headers: { 'X-CoinAPI-Key': 'AF8CE943-3925-4BE7-B78E-D1D6C6C4E02B'}})
 
-    const add: AddCurrencyDTO = {
+    const add: IAddNewCurrency = {
       name: cyptoData[i],
       symbol: res.data.asset_id_base,
       dollarPrice: res.data.rate.toFixed(4),

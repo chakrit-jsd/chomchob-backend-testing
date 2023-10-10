@@ -4,16 +4,25 @@ import { Currency } from './../models/Currency.model';
 import { createCEXWallet } from './balance.service';
 import { createNewExchange } from './exchange.service';
 import { Balance } from '../models/Balance.model';
+import sequelize from '../databases/connect.sequelize';
 
-export const addCurrency = async (data: AddCurrencyDTO) => {
+export interface IAddNewCurrency {
+  name: string;
+  symbol: string;
+  dollarPrice: number;
+  amount: number;
+}
+
+export const addCurrency = async (data: IAddNewCurrency) => {
   try {
     const curr = await Currency.create({
       name: data.name,
-      symbol: data.symbol,
+      symbol: data.symbol.toLocaleUpperCase(),
       dollarPrice: data.dollarPrice,
     })
-    await createNewExchange(curr.id)
-    const wallet = await createCEXWallet({ currencyId: curr.id, amount: data.amount})
+    const ex = await createNewExchange(curr.id)
+    if (ex instanceof Error) throw ex
+    const wallet = await createCEXWallet({ currencyId: curr.id, amount: data.amount })
     if (wallet instanceof Error) throw wallet
 
     return {
@@ -26,16 +35,20 @@ export const addCurrency = async (data: AddCurrencyDTO) => {
   }
 }
 
-export const updateCurrency = async (data: UpdateCurrencyDTO) => {
+export interface IEditCurrency {
+  currency: Currency;
+  name?: string;
+  symbol?: string;
+  dollarPrice?: number;
+}
+
+export const updateCurrency = async (data: IEditCurrency) => {
   try {
-    const curr = await Currency.findByPk(data.id)
-    if (!curr) throw 'currency not found'
 
-    curr.name = data.name || curr.name
-    curr.symbol = data.symbol || curr.symbol
-    curr.dollarPrice = data.dollarPrice || curr.dollarPrice
-    const res = await curr.save()
-
+    data.currency.name = data.name || data.currency.name;
+    data.currency.symbol = data.symbol || data.currency.symbol;
+    const res =  await data.currency.save()
+    console.log(res)
     return res
   } catch (error) {
     if (error instanceof Error) return error
