@@ -63,7 +63,7 @@ export const swapCurrency = async (data: SwapCurrency) => {
         currencyEx: initCurrency.symbol + '/' + targetCurrency.symbol,
         rate: exRate.finalRate,
         initialAmount: data.amount,
-        receivedAmount: exAmount,
+        receivedAmount: Number(exAmount.toFixed(4)),
       }, transaction)
       if (exTx instanceof Error) throw exTx;
       return exTx

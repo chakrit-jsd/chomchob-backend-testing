@@ -28,7 +28,7 @@ export const transferCurrency = async (data: TransferCurrency) => {
 
     const senderWallet = await getWalletByOwnerHasCurrency({ ownerId: data.senderId, currencyId: currency.id })
     if (senderWallet instanceof Error) throw senderWallet;
-    // console.log(amountForSend, senderWallet.amount)
+
     if (amountForSend > senderWallet.amount) throw 'amount is not enough'
 
     const receiverWallet = await getWalletByOwnerHasCurrency({ ownerId: data.receiverId, currencyId: currency.id })

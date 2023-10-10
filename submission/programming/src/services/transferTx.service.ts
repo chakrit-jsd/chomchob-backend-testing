@@ -5,7 +5,6 @@ interface CreateTransferTx extends ItransferTxOption {}
 
 export const createTransferTx = async (data: CreateTransferTx, transaction: Transaction) => {
   try {
-    console.log(data)
     const tx = await TransferTx.create(data, { transaction })
     return tx
   } catch (error) {
