@@ -1,6 +1,8 @@
-import {Table, Column, Model, DataType, DeletedAt, HasMany} from 'sequelize-typescript';
+import {Table, Column, Model, DataType, DeletedAt, HasMany, Scopes} from 'sequelize-typescript';
 import { DefaultModel } from "./_constrain";
 import { Balance } from './Balance.model';
+import { Sequelize } from 'sequelize';
+import sequelize from '../databases/connect.sequelize';
 
 export interface ICurrency extends DefaultModel {
   name: string;
@@ -8,6 +10,29 @@ export interface ICurrency extends DefaultModel {
   dollarPrice: number;
 }
 
+@Scopes(() => ({
+  TTW: {
+    include: {
+      model: Balance,
+      as: 'totalOwner',
+      order: [['amount', 'DESC']],
+      attributes: [
+        'address', 'amount', 'tier', 'ownerId',
+      ],
+    },
+    attributes: {
+      include: [
+        [Sequelize.literal(`(
+          select sum(amount)
+          from Balances as balances
+          where
+          balances.currencyId = currency.id
+        )`),
+         'totalBalance' ]
+      ]
+    }
+  }
+}))
 @Table({ timestamps: true })
 export class Currency extends Model<ICurrency> {
 
@@ -30,5 +55,5 @@ export class Currency extends Model<ICurrency> {
   deletedAt?: any;
 
   @HasMany(() => Balance, 'currencyId')
-  totalOwner!: Currency[];
+  totalOwner!: Balance[];
 }

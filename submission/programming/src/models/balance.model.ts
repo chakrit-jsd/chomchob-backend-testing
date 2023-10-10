@@ -18,6 +18,12 @@ interface IBalanceOption extends Optional<IBalance, 'address' | 'amount'> {}
 
 @Table({ timestamps: true })
 export class Balance extends Model<IBalance, IBalanceOption> {
+  static fn(arg0: string, arg1: any, arg2: string): string | import("sequelize/types/utils").Fn | import("sequelize/types/utils").Col | import("sequelize/types/utils").Literal {
+    throw new Error('Method not implemented.');
+  }
+  static col(arg0: string): any {
+    throw new Error('Method not implemented.');
+  }
   @PrimaryKey
   @Column({
     type: DataType.UUID,

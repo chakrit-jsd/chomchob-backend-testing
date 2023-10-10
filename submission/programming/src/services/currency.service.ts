@@ -3,6 +3,7 @@ import { AddCurrencyDTO, UpdateCurrencyDTO } from '../DTOs/currency.dto';
 import { Currency } from './../models/Currency.model';
 import { createCEXWallet } from './balance.service';
 import { createNewExchange } from './exchange.service';
+import { Balance } from '../models/Balance.model';
 
 export const addCurrency = async (data: AddCurrencyDTO) => {
   try {
@@ -77,11 +78,12 @@ interface GetOneCurrencyOptions {
 
 export const getOneCurrency = async (options: GetOneCurrencyOptions) => {
   const symbolCap = options.symbol?.toLocaleUpperCase();
+  const scope = [];
+  if (options.withOwner) scope.push('TTW')
   try {
-    const curr = await Currency.findOne(
+    const curr = await Currency.scope(scope).findOne(
       {
-        where: options.id ? { id: options.id } : { symbol: symbolCap },
-        include : options.withOwner ? ['totalOwner'] : []
+        where: options.id ? { id: options.id } : { symbol: symbolCap }
       });
     if (!curr) throw 'currency not found'
 

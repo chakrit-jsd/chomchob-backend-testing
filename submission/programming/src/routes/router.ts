@@ -1,12 +1,15 @@
 import { Router } from "express"
 import authRoute from "./auth.route"
 import userRoute from "./user.route"
-import { userGuard } from "../middlewares/role/user.guard"
+import { roleGuard } from "../middlewares/role/role.guard"
+import adminRoute from "./admin.route"
 
 const router = Router()
 
 router.use('/auth', authRoute)
-router.use('/me', userGuard, userRoute)
+router.use('/me', roleGuard("user"), userRoute)
+
+router.use('/admin', roleGuard("admin"), adminRoute)
 
 
 export default router
