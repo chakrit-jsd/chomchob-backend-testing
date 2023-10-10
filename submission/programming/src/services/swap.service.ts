@@ -26,7 +26,7 @@ export const swapCurrency = async (data: SwapCurrency) => {
     if (initWallet.amount < data.amount || data.amount < 0) throw 'amount is not enough'
 
     //find rate to swap
-    const exRate = await getOneExRate({ initCurrency: initCurrency, targetCurrency: targetCurrency })
+    const exRate = await getOneExRate({ initCurrency: initCurrency, targetCurrency: targetCurrency, role: 'admin' })
     if (exRate instanceof Error) throw exRate;
 
     //find CEX wallet for swap
@@ -45,6 +45,7 @@ export const swapCurrency = async (data: SwapCurrency) => {
       if (uCEXinitWallet instanceof Error) throw uCEXinitWallet;
 
       // 3. amount currency target cal by exchange rate
+      if (!exRate.finalRate) throw 'unprocess'
       const exAmount = Number(exRate.finalRate * data.amount);
 
       // 4. subtraction amount CEX wallet for send to target wallet
