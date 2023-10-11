@@ -1,0 +1,17 @@
+version: '3.9'
+
+services:
+  mariaDB:
+    image: mariadb:latest
+    container_name: code-item
+    restart: always
+    command: --max_allowed_packet=32505856
+    environment:
+      - MARIADB_DATABASE=code-item
+      - MARIADB_ROOT_PASSWORD=1234
+      - MARIADB_USER=root
+      - MARIADB_PASSWORD=1234
+    volumes:
+      - ./data/mariaDB:/var/lib/mysql
+    ports:
+      - 3308:3306
