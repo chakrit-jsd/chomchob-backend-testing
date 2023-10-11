@@ -20,7 +20,7 @@ interface IAccountOption extends Optional<IAccount, 'role'> {}
     attributes: ['id', 'username', 'firstName', 'lastName']
   },
   AL2: {
-    attributes: ['id', 'username', 'firstName', 'lastName', 'createdAt']
+    attributes: ['id', 'username', 'firstName', 'lastName', 'role', 'createdAt']
   },
   IS1: {
     include: {

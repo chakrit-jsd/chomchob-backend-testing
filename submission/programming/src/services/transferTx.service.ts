@@ -35,7 +35,7 @@ export const getAllTransferTx = async (data: GetAllTransferTx): Promise<Transfer
       where: data.type === 'sent' ? { senderId: data.accountId } : { receiverId: data.accountId },
       order: [data.order || ['updatedAt', 'DESC']],
       limit: data.limit || 20,
-      offset: (data.page ||  1) - 1,
+      offset: ((data.page ||  1) - 1) * (data.limit || 20),
 
     })
     return tx;
@@ -58,7 +58,7 @@ export const getSpecificTransferTx = async (data: GetSpecificTransferTx) => {
         where: { senderId: data.senderId, receiverId: data.receiverId },
         order: [data.order || ['updatedAt', 'DESC']],
         limit: data.limit || 20,
-        offset: (data.page ||  1) - 1,
+        offset: ((data.page ||  1) - 1) * (data.limit || 20),
       })
       return tranferTx;
   } catch (error) {

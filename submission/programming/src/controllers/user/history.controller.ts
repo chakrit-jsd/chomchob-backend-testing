@@ -46,7 +46,11 @@ export const getTransferHistory = <RequestHandler<unknown, IResponse, unknown, I
       success: true,
       code: 200,
       message: `get history ${type} success`,
-      data: data
+      data: {
+        page: page || 1,
+        limit: limit || 20,
+        tx: data
+      }
     })
   }
 )

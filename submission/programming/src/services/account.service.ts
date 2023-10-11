@@ -53,7 +53,7 @@ export const changePassword = async (data: ChangePasswordDTO) => {
   }
 }
 
-interface GetOneAccountOptions {
+export interface GetOneAccountOptions {
   id?: number;
   username?: string;
   withBalance?: boolean,
@@ -76,27 +76,39 @@ export const getOneAccount = async (options: GetOneAccountOptions) => {
   }
 }
 
-interface GetAllAccountOptions {
+export interface GetAllAccountOptions {
   withBalance?: boolean;
-  order?: [string, string];
+  order?: 'DESC'| 'ASC';
   limit?: number;
   page?: number;
+  role?: 'CEX' | 'admin' | 'user';
 }
 
-export const getAllAccount = async (options: GetAllAccountOptions) => {
-  options.order = !options.order ? ['createdAt', 'ASC'] : options.order
+export const getAllAccount = async (options?: GetAllAccountOptions) => {
   const scopes: string[] = ['AL2']
-  if (options.withBalance) scopes.push('IS2')
+  if (options?.withBalance) scopes.push('IS2')
   try {
+    console.log((options?.page || 1) - 1)
     const accArr = await Account
     .scope(scopes)
     .findAll({
-      offset: (options.page || 1) - 1,
-      limit: options.limit || 20,
-      order: [options.order],
+      where : options?.role ? { role : options?.role } : {} ,
+      offset: ((options?.page || 1) - 1) * (options?.limit || 20),
+      limit: options?.limit || 20,
+      order: [['createdAt', options?.order || 'ASC']] ,
     })
 
     return accArr;
+  } catch (error) {
+    if (error instanceof Error) return error
+    return new Error(error as string)
+  }
+}
+
+export const getCEXAccountId = async () => {
+  try {
+    const acc = await Account.findOne({ where: { username: 'CEX', role: 'CEX' }})
+    return acc?.id as number
   } catch (error) {
     if (error instanceof Error) return error
     return new Error(error as string)
