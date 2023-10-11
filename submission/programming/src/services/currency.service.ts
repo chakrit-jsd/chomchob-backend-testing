@@ -1,11 +1,6 @@
-import { where } from 'sequelize';
-import { AddCurrencyDTO, UpdateCurrencyDTO } from '../DTOs/currency.dto';
 import { Currency } from './../models/Currency.model';
 import { createCEXWallet } from './balance.service';
 import { createNewExchange } from './exchange.service';
-import { Balance } from '../models/Balance.model';
-import sequelize from '../databases/connect.sequelize';
-
 export interface IAddNewCurrency {
   name: string;
   symbol: string;
@@ -48,7 +43,7 @@ export const updateCurrency = async (data: IEditCurrency) => {
     data.currency.name = data.name || data.currency.name;
     data.currency.symbol = data.symbol || data.currency.symbol;
     const res =  await data.currency.save()
-    console.log(res)
+
     return res
   } catch (error) {
     if (error instanceof Error) return error

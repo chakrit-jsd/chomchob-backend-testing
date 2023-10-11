@@ -1,6 +1,5 @@
 import axios from "axios";
 import bcrypt from 'bcrypt'
-import { AddCurrencyDTO } from "../DTOs/currency.dto";
 import { Account } from "../models/Account.model";
 import { Balance } from "../models/Balance.model";
 import { Currency } from "../models/Currency.model";

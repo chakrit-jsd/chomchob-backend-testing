@@ -7,7 +7,7 @@ import { TransferCurrency, transferCurrency } from "../../services/transfer.serv
 import { getOneCurrency } from "../../services/currency.service";
 
 
-interface IQParamsGetAllUser {
+export interface IQParamsGetAllUser {
   limit?: number;
   page?: number;
   order?: 'DESC' | 'ASC';
@@ -33,7 +33,7 @@ export const getAllUser = <RequestHandler<unknown, IResponse, unknown, IQParamsG
   }
 )
 
-interface IQParamsGetUserHistroy {
+export interface IQParamsGetUserHistroy {
   owner: string | number;
   type: 'sent' | 'received' | 'swap';
   order? : 'DESC' | 'ASC';
@@ -85,17 +85,17 @@ export const getUserHistory = <RequestHandler<unknown, IResponse, unknown, IQPar
   }
 )
 
-interface IQParamsGetSpecific {
+export interface IQParamsGetSpecific {
   sender: string | number;
   receiver: string | number;
-  date?: 'DESC' | 'ASC';
+  order?: 'DESC' | 'ASC';
   limit?: number;
   page?: number;
 }
 
 export const getSpecificTransfer = <RequestHandler<unknown, IResponse, unknown, IQParamsGetSpecific>>(
   async (req, res, next) => {
-    const { sender, receiver, date, limit, page } = req.query
+    const { sender, receiver, order, limit, page } = req.query
     const op1: GetOneAccountOptions  = isNaN(Number(sender)) ? { username : String(sender) } : { id : Number(sender) }
     const user1 = await getOneAccount(op1)
     if (user1 instanceof Error) return next(user1)
@@ -106,7 +106,7 @@ export const getSpecificTransfer = <RequestHandler<unknown, IResponse, unknown, 
     const tx = await getSpecificTransferTx({
       senderId: user1.id,
       receiverId: user2.id,
-      order: ['updatedAt', date ?  date : 'DESC' ],
+      order: ['updatedAt', order ?  order : 'DESC' ],
       page,
       limit
     });
@@ -125,7 +125,7 @@ export const getSpecificTransfer = <RequestHandler<unknown, IResponse, unknown, 
   }
 )
 
-interface IReqPostTransferCurrency {
+export interface IReqPostTransferCurrency {
   target: string | number;
   currency: string;
   amount: number;

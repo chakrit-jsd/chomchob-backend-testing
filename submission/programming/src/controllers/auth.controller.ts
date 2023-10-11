@@ -1,15 +1,18 @@
 import { RequestHandler } from 'express'
-import { CreateAccountDTO } from '../DTOs/account.dto';
 import { createAccount } from '../services/account.service';
 import { IResponse } from './_response';
 import passport from 'passport';
 import { Account } from '../models/Account.model';
 
-interface ReqRegisterBody extends CreateAccountDTO {
+export interface IReqRegisterBody {
+  username: string;
+  password: string;
   confirmPassword: string;
+  firstName: string;
+  lastName: string;
 }
 
-export const register = <RequestHandler<unknown, IResponse, ReqRegisterBody>>(
+export const register = <RequestHandler<unknown, IResponse, IReqRegisterBody>>(
   async (req, res, next) => {
     const acc = await createAccount(req.body)
     // console.log(acc)

@@ -1,11 +1,9 @@
-import { ChangePasswordDTO } from './../DTOs/account.dto';
-import { CreateAccountDTO, UpdateAccountDTO } from "../DTOs/account.dto";
 import { Account, IAccount } from "../models/Account.model";
 import bcrypt from 'bcrypt';
 
 interface CreateAccountReturn extends Pick<IAccount, 'id' | 'username' | 'firstName' | 'lastName' | 'createdAt'> {}
-export const createAccount = async (data: CreateAccountDTO): Promise<CreateAccountReturn | Error> => {
-  // const saltRound = Math.floor(Math.random() * (11 - 8)) + 8
+interface ICreateAccount extends Pick<IAccount, 'username' | 'password' | 'firstName' | 'lastName'> {}
+export const createAccount = async (data: ICreateAccount): Promise<CreateAccountReturn | Error> => {
   try {
     const hadhPassword = await bcrypt.hash(data.password, 10)
     data.password = hadhPassword;
@@ -23,7 +21,13 @@ export const createAccount = async (data: CreateAccountDTO): Promise<CreateAccou
   }
 }
 
-export const updateAccount = async (data: UpdateAccountDTO) => {
+interface IUpdateAccount {
+  id: number;
+  firstName: string;
+  lastName: string;
+}
+
+export const updateAccount = async (data: IUpdateAccount) => {
   try {
     const acc = await Account.findByPk(data.id);
     if (!acc) throw 'account not found'
@@ -39,7 +43,12 @@ export const updateAccount = async (data: UpdateAccountDTO) => {
   }
 }
 
-export const changePassword = async (data: ChangePasswordDTO) => {
+interface IChangePassword {
+  id: number;
+  newPassword: string;
+}
+
+export const changePassword = async (data: IChangePassword) => {
   try {
     const acc = await Account.findByPk(data.id);
     if (!acc) throw 'account not found'

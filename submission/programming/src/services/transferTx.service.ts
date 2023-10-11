@@ -34,7 +34,7 @@ export const getAllTransferTx = async (data: GetAllTransferTx): Promise<Transfer
     const tx = await TransferTx.scope('ISTX').findAll({
       where: data.type === 'sent' ? { senderId: data.accountId } : { receiverId: data.accountId },
       order: [data.order || ['updatedAt', 'DESC']],
-      limit: data.limit || 20,
+      limit: Number(data.limit) || 20,
       offset: ((data.page ||  1) - 1) * (data.limit || 20),
 
     })
@@ -57,7 +57,7 @@ export const getSpecificTransferTx = async (data: GetSpecificTransferTx) => {
       const tranferTx = await TransferTx.scope('ISTX').findAll({
         where: { senderId: data.senderId, receiverId: data.receiverId },
         order: [data.order || ['updatedAt', 'DESC']],
-        limit: data.limit || 20,
+        limit: Number(data.limit) || 20,
         offset: ((data.page ||  1) - 1) * (data.limit || 20),
       })
       return tranferTx;

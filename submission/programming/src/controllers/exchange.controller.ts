@@ -4,12 +4,6 @@ import { IResponse } from "./_response";
 import { Account } from "../models/Account.model";
 import { getTwoCurrencyForExRateBySymbol } from "../services/currency.service";
 
-interface UserReponse {
-  exchange: string;
-  rate: number;
-  time: Date;
-}
-
 export const getAllExchange = <RequestHandler<unknown, IResponse>>(
   async (req, res, next) => {
     const user = req.user as Account;
@@ -25,7 +19,7 @@ export const getAllExchange = <RequestHandler<unknown, IResponse>>(
   }
 )
 
-interface IQParamsGetOneExRate {
+export interface IQParamsGetOneExRate {
   init: string;
   target: string;
 }

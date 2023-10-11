@@ -1,2 +1,0 @@
-import './passport/local.passport'
-

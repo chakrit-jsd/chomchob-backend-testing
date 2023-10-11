@@ -12,7 +12,7 @@ router.use('/me', roleGuard("user"), userRoute)
 
 router.use('/admin', roleGuard("admin"), adminRoute)
 
-router.use('/exchange', exchangeRoute)
+router.use('/exchange',roleGuard('not guest'), exchangeRoute)
 
 
 export default router

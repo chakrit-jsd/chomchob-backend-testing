@@ -18,7 +18,7 @@ export const getAll = <RequestHandler<unknown, IResponse>>(
   }
 )
 
-interface IQParamsGetOneAndTotalBalance {
+export interface IQParamsGetOneAndTotalBalance {
   symbol: string;
 }
 
@@ -39,7 +39,7 @@ export const getOneAndTotalBalance = <RequestHandler<unknown, IResponse, unknown
   }
 )
 
-interface IQParamsGetBalanceByOwner {
+export interface IQParamsGetBalanceByOwner {
   owner: number | string;
 }
 
@@ -80,7 +80,7 @@ export const postAddNewCurrency = <RequestHandler<unknown, IResponse, IAddNewCur
   }
 )
 
-interface IReqEditCurrency {
+export interface IReqEditCurrency {
   oldSymbol: string;
   newName: string;
   newSymbol: string;

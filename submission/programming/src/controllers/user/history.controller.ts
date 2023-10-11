@@ -6,7 +6,7 @@ import { Account } from '../../models/Account.model';
 import { getAllSwapTx } from '../../services/swapTx.service';
 
 
-interface IQParamsGetHistroy {
+export interface IQParamsGetHistroy {
   type: 'sent' | 'received' | 'swap';
   order? : 'DESC' | 'ASC';
   limit?: number;

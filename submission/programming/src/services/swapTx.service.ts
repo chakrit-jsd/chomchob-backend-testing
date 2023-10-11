@@ -27,7 +27,7 @@ export const getAllSwapTx = async (data: GetSwapTx) => {
     const tx = await SwapTx.findAll({
       where: { ownerId: data.ownerId },
       order: [data.order || ['updatedAt', 'DESC']],
-      limit: data.limit || 20,
+      limit: Number(data.limit )|| 20,
       offset: ((data.page ||  1) - 1) * (data.limit || 20),
     })
     return tx;

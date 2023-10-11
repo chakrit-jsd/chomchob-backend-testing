@@ -20,7 +20,7 @@ export const getWallet = <RequestHandler<unknown, IResponse>>(
   }
 )
 
-interface IReqBodyTransfer {
+export interface IReqBodyTransfer {
   receiverUsername: string;
   initCurrency: string;
   targetCurrency: string;
@@ -51,7 +51,7 @@ export const postTransfer = <RequestHandler<unknown, IResponse, IReqBodyTransfer
   }
 )
 
-interface IReqBodySwap {
+export interface IReqBodySwap {
   initCurrency: string;
   targetCurrency: string;
   initAmount: number;
