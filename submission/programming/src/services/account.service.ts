@@ -103,7 +103,7 @@ export const getAllAccount = async (options?: GetAllAccountOptions) => {
     .findAll({
       where : options?.role ? { role : options?.role } : {} ,
       offset: ((options?.page || 1) - 1) * (options?.limit || 20),
-      limit: options?.limit || 20,
+      limit: Number(options?.limit) || 20,
       order: [['createdAt', options?.order || 'ASC']] ,
     })
 
