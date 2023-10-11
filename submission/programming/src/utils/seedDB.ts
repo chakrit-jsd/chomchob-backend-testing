@@ -48,4 +48,12 @@ export const seeder = async () => {
     // await createNewExchange(curr.id)
     console.log(curr)
   }
+
+  await Account.create({
+    username: 'admin1234',
+    password: await bcrypt.hash('admin1234', 10),
+    firstName: 'admin1234',
+    lastName: 'admin1234',
+    role: Role.ADMIN,
+  })
 }
