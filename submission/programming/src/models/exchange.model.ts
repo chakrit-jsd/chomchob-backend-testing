@@ -11,23 +11,25 @@ export enum AdjustType {
 export interface IExchange extends DefaultModel {
   initialCurrencyId: number;
   targetCurrencyId: number;
-  adjust: number;
-  adjustType: AdjustType;
+  addjust: number;
+  addjustType: AdjustType;
 }
 
-interface IExchangeOption extends Optional<IExchange, 'adjust' | 'adjustType'> {}
+interface IExchangeOption extends Optional<IExchange, 'addjust' | 'addjustType'> {}
 
 @Table({ timestamps: true })
 export class Exchange extends Model<IExchange, IExchangeOption> {
 
-  @Column(DataType.FLOAT(3,2))
-  adjust!: number;
+  @Column({
+    type: DataType.FLOAT(5,2),
+  })
+  addjust!: number;
 
   @Column({
     type: DataType.ENUM(AdjustType.PERCENTAGE, AdjustType.PLAIN),
     defaultValue: null,
   })
-  adjustType!: string;
+  addjustType!: string;
 
   @DeletedAt
   deletedAt?: any;

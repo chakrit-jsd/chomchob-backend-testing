@@ -1,7 +1,7 @@
 import { Op, Transaction } from "sequelize"
 import { Currency } from "../models/Currency.model"
 import { AdjustType, Exchange } from "../models/Exchange.model"
-import { getAllCurrency, getOneCurrency } from "./currency.service"
+import { getAllCurrency, getOneCurrency, getTwoCurrencyForExRateBySymbol } from "./currency.service"
 import sequelize from "../databases/connect.sequelize"
 
 export const createNewExchange = async (newCureencyId: number) => {
@@ -54,8 +54,8 @@ export async function getOneExRate(data: GetOneExRateInstance): Promise<GetOneRa
     if (!ex) throw 'exchange not found'
     const baseRate = init.dollarPrice / target.dollarPrice
     let finalRate = baseRate;
-    if (ex.adjust) {
-      finalRate = baseRate + (ex.adjustType === AdjustType.PLAIN ? ex.adjust : (baseRate/100) * ex.adjust)
+    if (ex.addjust) {
+      finalRate = baseRate + (ex.addjustType === AdjustType.PLAIN ? ex.addjust : (baseRate/100) * ex.addjust)
     }
     const exRate: GetOneRateReturn = {
       exchange: init.symbol + '/' + target.symbol,
@@ -66,8 +66,8 @@ export async function getOneExRate(data: GetOneExRateInstance): Promise<GetOneRa
       exRate.rate = undefined;
       exRate.baseRate = Number(baseRate.toFixed(8))
       exRate.finalRate = Number(finalRate.toFixed(8))
-      exRate.addjust = ex.adjust
-      exRate.addjustType = ex.adjustType
+      exRate.addjust = ex.addjust
+      exRate.addjustType = ex.addjustType
     }
 
     return exRate
@@ -85,8 +85,8 @@ export const getAllExRate = async (role: 'admin' | 'other'): Promise<GetOneRateR
     for (const ex of allEx) {
       const baseRate = ex.initialCurrency.dollarPrice / ex.targetCurrency.dollarPrice
       let finalRate = baseRate;
-      if (ex.adjust) {
-        finalRate = baseRate + (ex.adjustType === AdjustType.PLAIN ? ex.adjust : (baseRate/100) * ex.adjust)
+      if (ex.addjust) {
+        finalRate = baseRate + (ex.addjustType === AdjustType.PLAIN ? ex.addjust : (baseRate/100) * ex.addjust)
       }
       const pData: GetOneRateReturn = {
         exchange: ex.initialCurrency.symbol + '/' + ex.targetCurrency.symbol,
@@ -97,8 +97,8 @@ export const getAllExRate = async (role: 'admin' | 'other'): Promise<GetOneRateR
       if (role === 'admin') {
         pData.baseRate = Number(baseRate.toFixed(8))
         pData.finalRate = Number(finalRate.toFixed(8))
-        pData.addjust = ex.adjust
-        pData.addjustType = ex.adjustType
+        pData.addjust = ex.addjust
+        pData.addjustType = ex.addjustType
         pData.rate = undefined
       }
 
@@ -111,7 +111,7 @@ export const getAllExRate = async (role: 'admin' | 'other'): Promise<GetOneRateR
   }
 }
 
-interface AddjustExRate {
+export interface AddjustExRate {
   onlyEx?: [string, string] | string;
   addjust: number;
   addjustType: AdjustType.PLAIN | AdjustType.PERCENTAGE;
@@ -124,7 +124,7 @@ export const addjustExRate = async (data: AddjustExRate) => {
         const c = await getOneCurrency({ symbol: data.onlyEx })
         if (c instanceof Error) throw c;
         const result = await sequelize.transaction(async (transaction) => {
-          const exs = await Exchange.update({ adjust: data.addjust, adjustType: data.addjustType },
+          const exs = await Exchange.update({ addjust: data.addjust, addjustType: data.addjustType },
             {
               where: {
                 [Op.or]: {
@@ -137,7 +137,41 @@ export const addjustExRate = async (data: AddjustExRate) => {
           return exs
         })
         return result;
+      } else if (typeof data.onlyEx === 'object') {
+        const c = await getTwoCurrencyForExRateBySymbol({ initSymbol: data.onlyEx[0], targetSymbol: data.onlyEx[1] })
+        if (c instanceof Error) throw c;
+        const result = await sequelize.transaction(async (transaction) => {
+          const exs = await Exchange.update({ addjust: data.addjust, addjustType: data.addjustType },
+            {
+              where: {
+                [Op.or]: [
+                  {
+                    initialCurrencyId: c.initCurrency.id,
+                    targetCurrencyId: c.targetCurrency.id,
+                  },
+                  {
+                    initialCurrencyId: c.targetCurrency.id,
+                    targetCurrencyId: c.initCurrency.id,
+                  }
+                ]
+              },
+              transaction: transaction
+            } )
+          return exs
+        })
+        return result;
       }
+    } else {
+      const result = await sequelize.transaction(async (transaction) => {
+        const exs = await Exchange.update({ addjust: data.addjust, addjustType: data.addjustType },
+          {
+            where: { deletedAt: null },
+            transaction: transaction,
+          }
+        )
+        return exs
+      })
+      return result;
     }
   } catch (error) {
     if (error instanceof Error) return error

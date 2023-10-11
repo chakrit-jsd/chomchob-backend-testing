@@ -1,11 +1,8 @@
 import { getOneCurrency } from './../../services/currency.service';
 import { RequestHandler } from "express";
-import { IAddNewCurrency, IEditCurrency, addCurrency, getAllCurrency, updateCurrency } from "../../services/currency.service";
+import { IAddNewCurrency, addCurrency, getAllCurrency, updateCurrency } from "../../services/currency.service";
 import { IResponse } from "../_response";
-import { Balance } from "../../models/Balance.model";
-import sequelize from "../../databases/connect.sequelize";
 import { getOneAccount } from "../../services/account.service";
-import { AddCurrencyDTO } from "../../DTOs/currency.dto";
 
 export const getAll = <RequestHandler<unknown, IResponse>>(
   async (req, res, next) => {
